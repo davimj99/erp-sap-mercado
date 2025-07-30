@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório de Vendas</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <div class="container">
+
+        <!-- Cards com datas e totais -->
+        {% if vendas_dias %}
+        <div class="cards-vendas-dias">
+            {% for dia, total in vendas_dias.items %}
+                <a href="{% url 'vendas_por_data' data=dia %}" class="card-dia">
+                    <div class="card-conteudo">
+                        <div class="data-dia">{{ dia|date:"d/m/Y" }}</div>
+                        <div class="quantidade-dia">{{ total }}</div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Título com data e total -->
+        {% if data_hoje %}
+            <h1 class="titulo-relatorio">
+                Relatório de Vendas do dia {{ data_relatorio }}<br> — Total vendido: R$ 
+                {{ valor_total_dia|floatformat:2 }}
+            </h1>
+
+            <!-- Nova seção: Status dos pagamentos -->
+            <div class="status-pagamentos" style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                <h3>Status dos Pagamentos</h3>
+                <p><strong>Vendas Confirmadas:</strong> {{ vendas_confirmadas }}</p>
+                <p><strong>Vendas Pendentes:</strong> {{ vendas_pendentes }}</p>
+                <p><strong>Saldo Devedor Total:</strong> R$ {{ saldo_total_devedor|floatformat:2 }}</p>
+            </div>
+        {% endif %}
+
+        <!-- Lista de vendas -->
+        {% if vendas %}
+            <ul class="lista-vendas">
+                {% for venda in vendas %}
+                    <li class="venda-item">
+                        <strong>Venda #{{ venda.id }}</strong> — 
+                        Cliente: {{ venda.cliente.nome }} 
+                        <br>Total: R$ {{ venda.valor_total|floatformat:2 }}</br> 
+                        Data: {{ venda.data_venda|date:"d/m/Y H:i" }}
+                        <br>Forma de pagamento: {{ venda.forma_pagamento }}</br>
+
+                        <ul class="itens-venda">
+                            {% for item in venda.itens.all %}
+                                <li>
+                                    {{ item.quantidade }}x {{ item.produto.nome }}
+                                    (R$ {{ item.produto.preco|floatformat:2 }})
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                        {% if venda.pago %}
+                            <span style="color: green; font-weight: bold;">✅ Pagamento confirmado</span>
+                        {% else %}
+                            <span style="color: orange; font-weight: bold;">⏳ Aguardando pagamento</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Nenhuma venda registrada para este dia.</p>
+        {% endif %}
+
+        <br>
+        <a href="{% url 'dashboard' %}" class="btn-voltar">← Voltar ao Dashboard</a>
+    </div>
+</body>
+</html>
