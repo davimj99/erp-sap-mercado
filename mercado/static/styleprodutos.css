@@ -1,0 +1,272 @@
+/* Reset e Configurações Globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #5c299e 0%, #251d21 100%);
+    min-height: 100vh;
+    padding: 2rem;
+    color: #0e0d0d;
+}
+
+/* Título Principal */
+h1 {
+    text-align: left;
+    color: #ffffff;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    text-shadow: 2px 2px 4px rgb(5, 214, 251);
+    font-weight: 900;
+}
+
+/* Container Principal */
+.estoque-section {
+    max-width: 1500px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 3fr));
+    gap: 5rem;
+}
+
+/* Cards de Categoria */
+.categoria-section {
+    background: #fbfbfbe3;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 10px rgba(251, 4, 169, 0.916);
+    transition: transform 1.0s ease, box-shadow 0.8s ease;
+    overflow: hidden;
+}
+
+.categoria-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Títulos das Categorias */
+.categoria-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Cores por Categoria */
+.categoria-comida h3 {
+    color: #030303;
+    border-color: #020202;
+}
+
+.categoria-bebidas-nao-alcoolicas h3 {
+    color: #020202;
+    border-color: #050505;
+}
+
+.categoria-bebidas-alcoolicas h3 {
+    color: #000000;
+    border-color: #020202;
+}
+
+.categoria-doces h3 {
+    color: #000000;
+    border-color: #0b0b0b;
+}
+
+.categoria-decoracoes h3 {
+    color: #030303;
+    border-color: #070707;
+}
+
+.categoria-cigarros h3 {
+    color: #101010;
+    border-color: #060606;
+}
+
+/* Container da Tabela */
+.table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+}
+
+/* Estilo da Tabela */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+}
+
+thead {
+    background: linear-gradient(135deg, #010101 0%, #0a0a0a 100%);
+    color: #ffffff;
+}
+
+thead th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.2s ease;
+}
+
+tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+tbody tr:last-child {
+    border-bottom: none;
+}
+
+tbody td {
+    padding: 1rem;
+    font-size: 1rem;
+}
+
+/* Indicador de Estoque Baixo */
+tbody tr[data-low-stock] {
+    background-color: #a29696e4;
+    border-left: 4px solid #b42b2b;
+}
+
+tbody tr[data-low-stock]:hover {
+    background-color: #ff5d60;
+}
+
+.low-stock-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fd0318;
+    color: #ffffff;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+/* Estilo para Preços */
+tbody td:last-child {
+    font-weight: 600;
+    color: #27ae60;
+    font-size: 1.1rem;
+}
+
+/* Responsividade para Tablets */
+@media (max-width: 1024px) {
+    .estoque-section {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+}
+
+/* Responsividade para Celulares */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+    
+    .estoque-section {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .categoria-section {
+        padding: 1rem;
+    }
+    
+    .categoria-section h3 {
+        font-size: 1.3rem;
+    }
+    
+    thead th,
+    tbody td {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+    }
+    
+    tbody td:last-child {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    .categoria-section h3 {
+        font-size: 1.2rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    thead th,
+    tbody td {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    .low-stock-indicator {
+        padding: 0.2rem 0.6rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Scroll Suave */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Customização da Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}

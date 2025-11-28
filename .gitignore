@@ -1,0 +1,17 @@
+# Banco de dados
+db.sqlite3
+*.sqbpro
+
+# Django
+__pycache__/
+*.pyc
+*.log
+
+# VSCode
+.vscode/
+
+# Migrations compiladas
+*/migrations/__pycache__/
+
+# Ambiente virtual
+venv/

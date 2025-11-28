@@ -4,268 +4,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard </title>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <title>Dashboard – Gráficos</title>
+    <link rel="stylesheet" href="{% static 'styledashboard.css' %}">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'images/favicons/dashboard.favicon.png' %}">
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-    <div class="container">
-        <h1>𝑀𝐼𝑁𝐼 𝑀𝐸𝑅𝐶𝐴𝐷𝑂 </h1>
-        
-        <div class="vendas-section">
-            <h2>📊 Resumo de Vendas 5 dias de Evento.</h2>
-            <ul>
-                {% for dia, total in vendas_dias.items %}
-                    <li>
-                        <strong>{{ dia|date:"d \\d\\e F \\d\\e Y" }}</strong><br>
-                        {{ total }} produtos vendidos
-                    </li>
-                {% endfor %}
-            </ul>
 
-            <canvas id="graficoVendas" class="grafico-vendas"></canvas>
+<body  class="fundo-dashboard">
+    
+<div class="container">
 
-        </div>
-
-        <div class="estoque-section">
-            <h2>📦 Estoque por Categoria</h2>
-
-            <!-- Categoria: Comidas -->
-            <div class="categoria-section categoria-comida">
-                <h3>🍽️ Comidas</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Produto</th>
-                                <th>Estoque</th>
-                                <th>Preço</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for produto in produtos %}
-                                {% if produto.categoria == 'comida' %}
-                                <tr {% if produto.estoque < 10 %}data-low-stock{% endif %}>
-                                    <td>{{ produto.nome }}</td>
-                                    <td>
-                                        {% if produto.estoque < 10 %}
-                                            <span class="low-stock-indicator">{{ produto.estoque }}</span>
-                                        {% else %}
-                                            {{ produto.estoque }}
-                                        {% endif %}
-                                    </td>
-                                    <td>R$ {{ produto.preco }}</td>
-                                </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Categoria: Bebidas Não Alcoólicas -->
-            <div class="categoria-section categoria-bebidas">
-                <h3>🥤 Bebidas Não Alcoólicas</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Produto</th>
-                                <th>Estoque</th>
-                                <th>Preço</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for produto in produtos %}
-                                {% if produto.categoria == 'bebida' %}
-                                <tr {% if produto.estoque < 10 %}data-low-stock{% endif %}>
-                                    <td>{{ produto.nome }}</td>
-                                    <td>
-                                        {% if produto.estoque < 10 %}
-                                            <span class="low-stock-indicator">{{ produto.estoque }}</span>
-                                        {% else %}
-                                            {{ produto.estoque }}
-                                        {% endif %}
-                                    </td>
-                                    <td>R$ {{ produto.preco }}</td>
-                                </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Categoria: Doces -->
-            <div class="categoria-section categoria-doces">
-                <h3>🍬 Doces</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Produto</th>
-                                <th>Estoque</th>
-                                <th>Preço</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for produto in produtos %}
-                                {% if produto.categoria == 'doces' %}
-                                <tr {% if produto.estoque < 10 %}data-low-stock{% endif %}>
-                                    <td>{{ produto.nome }}</td>
-                                    <td>
-                                        {% if produto.estoque < 10 %}
-                                            <span class="low-stock-indicator">{{ produto.estoque }}</span>
-                                        {% else %}
-                                            {{ produto.estoque }}
-                                        {% endif %}
-                                    </td>
-                                    <td>R$ {{ produto.preco }}</td>
-                                </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Categoria: Acessórios -->
-            <div class="categoria-section categoria-decoracoes">
-                <h3>🎨 Acessórios</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Produto</th>
-                                <th>Estoque</th>
-                                <th>Preço</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for produto in produtos %}
-                                {% if produto.categoria == 'acessórios' %}
-                                <tr {% if produto.estoque < 10 %}data-low-stock{% endif %}>
-                                    <td>{{ produto.nome }}</td>
-                                    <td>
-                                        {% if produto.estoque < 10 %}
-                                            <span class="low-stock-indicator">{{ produto.estoque }}</span>
-                                        {% else %}
-                                            {{ produto.estoque }}
-                                        {% endif %}
-                                    </td>
-                                    <td>R$ {{ produto.preco }}</td>
-                                </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-  <div class="cards-vendas-dias">
-  {% for dia, total in vendas_dias.items %}
-    <a href="{% url 'vendas_por_data' data=dia %}" class="card-dia">
-      <div class="data-dia">{{ dia|date:"d/m/Y" }}</div>
-      <div class="quantidade-dia">{{ total }}</div>
+    <a href="{% url 'produtos' %}" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        class="btn-link">
+        VER PRODUTOS
     </a>
-  {% endfor %}
+    
+    <h1>📊 Dashboard – Resumo de Vendas <br> CONTROLE GERAL</h1>
+
+    <!-- ============================= -->
+    <!-- RESUMO DOS 30 DIAS LINHA  -->
+    <!-- ============================= -->
+    <h2>📈 Vendas dos Últimos 30 Dias</h2>
+    <canvas id="graficoLinha"></canvas>
+
+    <!-- ============================= -->
+    <!-- GRÁFICO BARRA CATEGORIAS -->
+    <!-- ============================= -->
+    <h2>📊 Vendas por Categoria</h2>
+    <canvas id="graficoCategorias"></canvas>
+
+    <!-- ============================= -->
+    <!-- GRÁFICO DOUGHNUT PAGAMENTOS -->
+    <!-- ============================= -->
+    <h2>💳 Formas de Pagamento Hoje</h2>
+    <canvas id="graficoPagamento"></canvas>
+
+    <!-- LISTA DOS 30 DIAS -->
+    <h2>Resumo dos Últimos 30 Dias</h2>
+    <ul class="space-y-3">
+    {% for dia, total in vendas_dias.items %}
+        {% url 'vendas_por_data' data=dia|date:'Y-m-d' as link_dia %}
+       <li>
+            <a href="{{ link_dia }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="card-link">
+
+        <div class="card-content">
+            <strong>{{ dia|date:"d \\d\\e F \\d\\e Y" }}</strong><br>
+            {{ total }} produtos vendidos
+        </div>
+
+            </a>
+        </li>
+    {% endfor %}
+    </ul>
+    
+
+    <a href="{% url 'produtos' %}" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        class="btn-link">
+        VER PRODUTOS
+    </a>
+
 </div>
 
-
-
-<h2>Total vendido hoje (valor)</h2>
-<p style="font-size: 1.5em; font-weight: bold; color: green;">
-  R$ {{ total_hoje|floatformat:2 }}
-</p>
-
-<h2>Total vendido hoje por forma de pagamento</h2>
-<ul>
-  {% for item in vendas_por_forma %}
-    <li>
-      <strong>{{ item.forma_pagamento|capfirst }}:</strong>
-      <span style="color:rgb(12, 12, 12); font-weight: bold;">
-        R$ {{ item.total|floatformat:2 }}
-      </span>
-    </li>
-  {% endfor %}
-</ul>
-
-
-    <!-- SCRIPT DO GRÁFICO DE VENDAS -->
-   <script>
-    const ctx = document.getElementById('graficoVendas').getContext('2d');
-
-    const graficoVendas = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: [
+<script>
+/* =======================================================
+   1 GRÁFICO DE LINHA – Vendas dos últimos 30 dias
+======================================================= */
+new Chart(document.getElementById('graficoLinha'), {
+    type: 'line',
+    data: {
+        labels: [
+            {% for dia, total in vendas_dias.items %}
+                "{{ dia|date:'d/m' }}",
+            {% endfor %}
+        ],
+        datasets: [{
+            label: "Produtos Vendidos",
+            data: [
                 {% for dia, total in vendas_dias.items %}
-                    "{{ dia|date:'d/m' }}",
+                    {{ total }},
                 {% endfor %}
             ],
-            datasets: [{
-                label: 'Produtos vendidos',
-                data: [
-                    {% for dia, total in vendas_dias.items %}
-                        {{ total }},
-                    {% endfor %}
-                ],
-                backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                borderRadius: 10,
-                barThickness: 30,
-                borderSkipped: false
-            }]
-        },
-        options: {
-            indexAxis: 'y',  // 👉 transforma em barras horizontais
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: false
-                },
-                title: {
-                    display: true,
-                    text: 'Vendas dos Últimos Dias',
-                    font: {
-                        size: 18
-                    }
-                },
-                tooltip: {
-                    backgroundColor: '#f8f9fa',
-                    titleColor: '#333',
-                    bodyColor: '#000',
-                    borderColor: '#ccc',
-                    borderWidth: 1
-                }
-            },
-            scales: {
-                x: {
-                    beginAtZero: true,
-                    grid: {
-                        color: '#eee'
-                    },
-                    ticks: {
-                        font: {
-                            size: 12
-                        }
-                    }
-                },
-                y: {
-                    grid: {
-                        display: false
-                    },
-                    ticks: {
-                        font: {
-                            size: 12
-                        }
-                    }
-                }
+            borderColor: "rgba(54, 162, 235, 1)",
+            backgroundColor: "rgba(54, 162, 235, 0.3)",
+            fill: true,
+            tension: 0.3,
+            borderWidth: 3
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: "Vendas Diárias (Últimos 30 Dias)",
+                font: { size: 18 }
             }
         }
-    });
-</script>
+    }
+});
 
+
+/* =======================================================
+   2 GRÁFICO DE BARRAS – Categorias mais vendidas
+======================================================= */
+new Chart(document.getElementById('graficoCategorias'), {
+    type: 'bar',
+    data: {
+        labels: {{ categorias_labels|safe }},
+        datasets: [{
+            label: "Total de Vendas",
+            data: {{ categorias_totais|safe }},
+            backgroundColor: "rgba(255, 159, 64, 0.7)",
+            borderColor: "rgba(255, 159, 64, 1)",
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: "Vendas por Categoria",
+                font: { size: 18 }
+            }
+        },
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+
+
+/* =======================================================
+   3 GRÁFICO DOUGHNUT – Formas de pagamento hoje
+======================================================= */
+new Chart(document.getElementById('graficoPagamento'), {
+    type: 'doughnut',
+    data: {
+        labels: [
+            {% for item in vendas_por_forma %}
+                "{{ item.forma_pagamento|capfirst }}",
+            {% endfor %}
+        ],
+        datasets: [{
+            data: [
+                {% for item in vendas_por_forma %}
+                    {{ item.total }},
+                {% endfor %}
+            ],
+            backgroundColor: [
+                "rgba(54, 162, 235, 0.7)",
+                "rgba(255, 99, 132, 0.7)",
+                "rgba(255, 206, 86, 0.7)",
+                "rgba(75, 192, 192, 0.7)",
+                "rgba(153, 102, 255, 0.7)"
+            ],
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: "Formas de Pagamento – Hoje",
+                font: { size: 18 }
+            }
+        }
+    }
+});
+</script>
 </body>
 </html>

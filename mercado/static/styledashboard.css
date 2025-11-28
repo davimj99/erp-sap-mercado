@@ -1,0 +1,409 @@
+/* ========================================
+   RESET E VARIÁVEIS CSS
+======================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --background-color: #ecf0f1;
+    --card-background: #ffffff;
+    --text-primary: #2c3e50;
+    --text-secondary: #7f8c8d;
+    --border-color: #dfe6e9;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========================================
+   CORPO E ESTRUTURA GERAL
+======================================== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a0a0a 0%, #050505 100%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: var(--card-background);
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: var(--shadow-lg);
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   TÍTULOS E CABEÇALHOS
+======================================== */
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 2.5rem;
+    text-align: center;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+    border-radius: 2px;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    padding-left: 1rem;
+    border-left: 4px solid var(--secondary-color);
+    transition: var(--transition);
+}
+
+h2:hover {
+    border-left-color: var(--accent-color);
+    padding-left: 1.5rem;
+}
+
+/* ========================================
+   CANVAS DOS GRÁFICOS
+======================================== */
+canvas {
+    max-width: 100%;
+    height: auto !important;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--background-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+canvas:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+/* Gráfico de Pagamento - Menor */
+#graficoPagamento {
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+/* ========================================
+   LISTA DE RESUMO - GRID LAYOUT
+======================================== */
+ul {
+    list-style: none;
+    margin-top: 2rem;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+li {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border-left: 5px solid var(--secondary-color);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    text-align: left;
+}
+
+li::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: var(--secondary-color);
+    transition: var(--transition);
+}
+
+li:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+    background: linear-gradient(135deg, #ffffff 0%, #e3e9f0 100%);
+}
+
+li:hover::before {
+    width: 100%;
+    opacity: 0.05;
+}
+
+li strong {
+    display: block;
+    font-size: 1rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+li:nth-child(odd) {
+    border-left-color: var(--success-color);
+}
+
+li:nth-child(odd)::before {
+    background: var(--success-color);
+}
+
+li:nth-child(even) {
+    border-left-color: var(--warning-color);
+}
+
+li:nth-child(even)::before {
+    background: var(--warning-color);
+}
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+@media (max-width: 1200px) {
+    .container {
+        padding: 2rem;
+    }
+    
+    ul {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 1rem 0.5rem;
+    }
+
+    .container {
+        padding: 1.5rem;
+        border-radius: 12px;
+    }
+
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+        margin-top: 2rem;
+    }
+
+    canvas {
+        padding: 1rem;
+    }
+
+    ul {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    li {
+        padding: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    h2 {
+        font-size: 1.1rem;
+        padding-left: 0.8rem;
+    }
+
+    ul {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 0.8rem;
+    }
+
+    li strong {
+        font-size: 0.9rem;
+    }
+    
+    li {
+        padding: 1rem;
+    }
+}
+
+/* ========================================
+   ANIMAÇÕES E EFEITOS ADICIONAIS
+======================================== */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+.container > *:nth-child(even) {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+/* Scrollbar customizada */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-color);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 10px;
+    transition: var(--transition);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* ========================================
+   MODO ESCURO (OPCIONAL)
+======================================== */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-color: #ecf0f1;
+        --text-primary: #ecf0f1;
+        --text-secondary: #bdc3c7;
+        --background-color: #1a1a2e;
+        --card-background: #16213e;
+        --border-color: #2c3e50;
+    }
+
+    body {
+        background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    }
+
+    canvas {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    li {
+        background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+        color: var(--text-primary);
+    }
+
+    li:hover {
+        background: linear-gradient(135deg, #1f3044 0%, #1d2433 100%);
+    }
+}
+
+.fundo-dashboard {
+    background-image: url("/static/images/fundo/planodefundodashboard.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+/* LINK PRA DIRECIONAR O PRODUTOS PARA PAGINA vendas_por_data_html */
+li::before {
+    pointer-events: none !important;
+    z-index: 0;
+}
+
+li a {
+    position: relative;
+    z-index: 10;
+}
+
+/* ===== BOTÃO VER PRODUTOS ===== */
+
+.btn-link {
+    display: inline-block;
+    background: linear-gradient(135deg, #ffaf02, #ffe600);
+    color: rgb(8, 8, 8);
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+    transition: 0.3s;
+    margin: 20px auto;
+    text-align: center;
+}
+
+/* Centraliza horizontalmente */
+.btn-link {
+    display: block;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn-link:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #66ff00, #00cc5c);
+}
+
+/* ================================
+   LINKS DENTRO DOS CARDS (LI)
+================================ */
+.card-link {
+    display: block;        
+    width: 100%;              
+    text-decoration: none;    
+}
+
+.card-content {
+    padding: 15px;
+    background: #fffefe;
+    border-radius: 10px;
+    color: #000000;
+    font-weight: 600;
+    border-left: 6px solid #3498db;
+    transition: 0.3s ease;
+}
+
+/* Efeito ao passar o mouse */
+.card-content:hover {
+    background: #e2e8f0;
+    transform: translateY(-3px);
+    border-left-color: #e67e22;
+}

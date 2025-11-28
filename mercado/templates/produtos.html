@@ -1,0 +1,218 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos</title>
+    <link rel="stylesheet" href="{% static '/styleprodutos.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/favicons/favicon.produtos.png' %}">
+</head>
+<body>
+
+<h1>📦 Estoque – Produtos</h1>
+
+<div class="estoque-section">
+
+    <!-- Categoria: Comidas -->
+    <div class="categoria-section categoria-comida">
+        <h3>🍽️ Comidas</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Estoque</th>
+                        <th>Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in produtos %}
+                        {% if produto.categoria|lower == 'comida' %}
+                        <tr {% if produto.estoque < 10 %}data-low-stock{% endif %}>
+                            <td>{{ produto.nome }}</td>
+                            <td>
+                                {% if produto.estoque < 10 %}
+                                <span class="low-stock-indicator">{{ produto.estoque }}</span>
+                                {% else %}
+                                {{ produto.estoque }}
+                                {% endif %}
+                            </td>
+                            <td>R$ {{ produto.preco }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Categoria: Bebidas Não Alcoólicas -->
+    <div class="categoria-section categoria-bebidas-nao-alcoolicas">
+        <h3>🥤 Bebidas Não Alcoólicas</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Estoque</th>
+                        <th>Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in produtos %}
+                        {% if produto.categoria == 'bebida_nao_alcoolica' %}
+                        <tr {% if produto.estoque < 10 %}data-low-stock{% endif %}>
+                            <td>{{ produto.nome }}</td>
+                            <td>
+                                {% if produto.estoque < 10 %}
+                                <span class="low-stock-indicator">{{ produto.estoque }}</span>
+                                {% else %}
+                                {{ produto.estoque }}
+                                {% endif %}
+                            </td>
+                            <td>R$ {{ produto.preco }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Categoria: Bebidas Alcoólicas -->
+    <div class="categoria-section categoria-bebidas-alcoolicas">
+        <h3>🍻 Bebidas Alcoólicas</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Estoque</th>
+                        <th>Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in produtos %}
+                        {% if produto.categoria == 'bebida_alcoolica' %}
+                        <tr {% if produto.estoque < 10 %}data-low-stock{% endif %}>
+                            <td>{{ produto.nome }}</td>
+                            <td>
+                                {% if produto.estoque < 10 %}
+                                <span class="low-stock-indicator">{{ produto.estoque }}</span>
+                                {% else %}
+                                {{ produto.estoque }}
+                                {% endif %}
+                            </td>
+                            <td>R$ {{ produto.preco }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Categoria: Doces -->
+    <div class="categoria-section categoria-doces">
+        <h3>🍬 Doces</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Estoque</th>
+                        <th>Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in produtos %}
+                        {% if produto.categoria == 'doces' %}
+                        <tr {% if produto.estoque < 10 %}data-low-stock{% endif %}>
+                            <td>{{ produto.nome }}</td>
+                            <td>
+                                {% if produto.estoque < 10 %}
+                                <span class="low-stock-indicator">{{ produto.estoque }}</span>
+                                {% else %}
+                                {{ produto.estoque }}
+                                {% endif %}
+                            </td>
+                            <td>R$ {{ produto.preco }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Categoria: Acessórios -->
+    <div class="categoria-section categoria-acessorios">
+        <h3>🎨 Acessórios</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Estoque</th>
+                        <th>Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in produtos %}
+                        {% if produto.categoria == 'acessorios' %}
+                        <tr {% if produto.estoque < 10 %}data-low-stock{% endif %}>
+                            <td>{{ produto.nome }}</td>
+                            <td>
+                                {% if produto.estoque < 10 %}
+                                <span class="low-stock-indicator">{{ produto.estoque }}</span>
+                                {% else %}
+                                {{ produto.estoque }}
+                                {% endif %}
+                            </td>
+                            <td>R$ {{ produto.preco }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Categoria: Cigarros -->
+    <div class="categoria-section categoria-cigarros">
+        <h3>🚬 Cigarros</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Estoque</th>
+                        <th>Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in produtos %}
+                        {% if produto.categoria == 'cigarros' %}
+                        <tr {% if produto.estoque < 10 %}data-low-stock{% endif %}>
+                            <td>{{ produto.nome }}</td>
+                            <td>
+                                {% if produto.estoque < 10 %}
+                                <span class="low-stock-indicator">{{ produto.estoque }}</span>
+                                {% else %}
+                                {{ produto.estoque }}
+                                {% endif %}
+                            </td>
+                            <td>R$ {{ produto.preco }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

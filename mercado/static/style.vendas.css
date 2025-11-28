@@ -1,0 +1,313 @@
+/* Reset e configurações globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    min-height: 100vh;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Container principal */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Título principal */
+h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, #2c3e50, #34495e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    line-height: 1.2;
+}
+
+
+/* Cards de vendas por dia */
+.cards-vendas-dias {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.card-dia {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.card-dia::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.card-dia:hover::before {
+    left: 100%;
+}
+
+.card-dia:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 15px 35px rgb(255, 254, 254);
+}
+
+.data-dia {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
+
+.quantidade-dia {
+    font-size: 2rem;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Seção de totais */
+h2 {
+    color: #edeeef;
+    font-size: 1.5rem;
+    margin: 30px 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+    display: inline-block;
+}
+
+/* Valor total */
+p[style*="color: green"] {
+    background: linear-gradient(135deg, #f4f5f7 0%, #f5f7f8 100%);
+    color: rgba(50, 232, 14, 0.879) !important;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(253, 251, 251, 0.269);
+    margin: 20px 0;
+}
+
+/* Lista de formas de pagamento */
+ul {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+ul li {
+    padding: 12px 0;
+    border-bottom: 1px solid #040404;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+ul li:last-child {
+    border-bottom: none;
+}
+
+ul li strong {
+    color: white;
+    font-weight: 600;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    padding: 8px 15px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+}
+
+ul li span {
+    color: #27ae60 !important;
+    font-weight: bold !important;
+    background: linear-gradient(135deg, #d5dff4 0%, #c8e6c9 100%);
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+/* Status de pagamento em spans */
+.status-pagamento-confirmado {
+    color: rgb(4, 247, 89) !important;
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    padding: 8px 15px;
+    border-radius: 25px;
+    font-weight: bold !important;
+    font-size: 0.9rem;
+    display: inline-block;
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+    border: 2px solid #28a745;
+}
+
+.status-pagamento-pendente {
+    color: white !important;
+    background: linear-gradient(135deg, #ff020a 0%, #ff0000 100%);
+    padding: 8px 15px;
+    border-radius: 25px;
+    font-weight: bold !important;
+    font-size: 0.9rem;
+    display: inline-block;
+    box-shadow: 0 4px 8px rgba(243, 156, 18, 0.3);
+    border: 2px solid #f31212;
+    animation: pulse 2s infinite;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        margin: 10px;
+        padding: 15px;
+        border-radius: 15px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .vendas-section, .estoque-section {
+        padding: 20px;
+    }
+
+    .vendas-section h2, .estoque-section h2 {
+        font-size: 1.5rem;
+    }
+
+    .categoria-section h3 {
+        font-size: 1.1rem;
+        padding: 15px 20px;
+    }
+
+    table {
+        font-size: 0.85rem;
+    }
+
+    thead th, tbody td {
+        padding: 10px 15px;
+    }
+
+    .cards-vendas-dias {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+    }
+
+    .card-dia {
+        padding: 15px;
+    }
+
+    .quantidade-dia {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .vendas-section, .estoque-section {
+        padding: 15px;
+    }
+
+    .table-container {
+        font-size: 0.8rem;
+    }
+
+    .cards-vendas-dias {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Animações sutis */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container > * {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.categoria-section:nth-child(1) { animation-delay: 0.1s; }
+.categoria-section:nth-child(2) { animation-delay: 0.2s; }
+.categoria-section:nth-child(3) { animation-delay: 0.3s; }
+.categoria-section:nth-child(4) { animation-delay: 0.4s; }
+
+
+/* Botão voltar */
+.btn-voltar {
+    display: inline-block;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(44, 62, 80, 0.3);
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.btn-voltar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-voltar:hover::before {
+    left: 100%;
+}
+
+.btn-voltar:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(44, 62, 80, 0.4);
+    border-color: #2c3e50;
+}
+
+.btn-voltar:active {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 5px 15px rgba(44, 62, 80, 0.3);
+}

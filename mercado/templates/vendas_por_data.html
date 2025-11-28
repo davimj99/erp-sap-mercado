@@ -4,16 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Relatório de Vendas</title>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'style.vendas.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/favicons/vendas.favicon.png' %}">
+
 </head>
 <body>
+    
+    
     <div class="container">
 
         <!-- Cards com datas e totais -->
         {% if vendas_dias %}
         <div class="cards-vendas-dias">
             {% for dia, total in vendas_dias.items %}
-                <a href="{% url 'vendas_por_data' data=dia %}" class="card-dia">
+                <a href="{% url 'vendas_por_data' data=dia|date:'Y-m-d' %}" class="card-dia">
                     <div class="card-conteudo">
                         <div class="data-dia">{{ dia|date:"d/m/Y" }}</div>
                         <div class="quantidade-dia">{{ total }}</div>

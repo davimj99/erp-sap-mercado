@@ -5,22 +5,28 @@ from django.db.models import Sum
 from decimal import Decimal
 from simple_history.models import HistoricalRecords
 
+# Sinais
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
+
 # -------------------------------
 # PRODUTO
 # -------------------------------
 class Produto(models.Model):
     CATEGORIAS = [
         ('comida', 'Comida'),
-        ('bebida', 'Bebida Não Alcoólica'),
+        ('bebida_nao_alcoolica', 'Bebida Não Alcoólica'),
+        ('bebida_alcoolica', 'Bebida Alcoólica'),
         ('doces', 'Doces'),
-        ('acessórios', 'Acessórios'),
-        ('combos','Combos'),
+        ('acessorios', 'Acessórios'),
+        ('cigarros', 'Cigarros')
     ]
 
     nome = models.CharField(max_length=100)
     preco = models.DecimalField(max_digits=6, decimal_places=2)
     estoque = models.PositiveIntegerField()
     categoria = models.CharField(max_length=20, choices=CATEGORIAS)
+    codigo_barras = models.CharField(max_length=50, unique=True, blank=True, null=True)
 
     history = HistoricalRecords()
 
@@ -43,21 +49,21 @@ class Produto(models.Model):
         self.estoque += quantidade
         self.save()
 
+
 # -------------------------------
 # CLIENTE
 # -------------------------------
 class Cliente(models.Model):
     TIPOS = [
-        ('seguidor', 'Seguidor'),
-        ('seguimista', 'Seguimista'),
+        ('cliente', 'Cliente'),
+        ('conta', 'Conta'),
     ]
 
     nome = models.CharField(max_length=100)
     telefone = models.CharField(max_length=20, blank=True, null=True)
     tipo = models.CharField(max_length=20, choices=TIPOS)
-    
-    equipe = models.CharField(max_length=100, blank=True, null=True)  # Para seguidores
-    cor = models.CharField(max_length=20, blank=True, null=True)      # Para seguimistas
+    equipe = models.CharField(max_length=100, blank=True, null=True)
+    cor = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
         return f"{self.nome} ({self.get_tipo_display()})"
@@ -70,13 +76,14 @@ class Cliente(models.Model):
         total = self.vendas.aggregate(total=Sum('valor_pago'))['total']
         return total or Decimal('0.00')
 
-# Proxy para resumo
+
 class ClienteResumo(Cliente):
     class Meta:
         proxy = True
         verbose_name = 'Resumo de Vendas'
         verbose_name_plural = 'Resumo de Vendas'
         ordering = ['nome']
+
 
 # -------------------------------
 # VENDA
@@ -91,39 +98,15 @@ class Venda(models.Model):
     ]
 
     data_venda = models.DateTimeField(auto_now_add=True)
-    cliente = models.ForeignKey(
-        'Cliente',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='vendas'
-    )
-    forma_pagamento = models.CharField(
-        max_length=10,
-        choices=FORMAS_PAGAMENTO,
-        default='dinheiro'
-    )
-    valor_pago = models.DecimalField(
-        max_digits=10, decimal_places=2,
-        null=True, blank=True,
-        help_text="Informe quanto o cliente pagou (somente se for dinheiro)."
-    )
+    cliente = models.ForeignKey('Cliente', on_delete=models.SET_NULL, null=True, blank=True, related_name='vendas')
+    forma_pagamento = models.CharField(max_length=10, choices=FORMAS_PAGAMENTO, default='dinheiro')
+    valor_pago = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     troco = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
-    valor_total = models.DecimalField(
-        max_digits=10, decimal_places=2,
-        default=Decimal('0.00'),
-        editable=False
-    )
-    saldo_devedor = models.DecimalField(
-        max_digits=10, decimal_places=2,
-        default=Decimal('0.00'),
-        editable=False
-    )
+    valor_total = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), editable=False)
+    saldo_devedor = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), editable=False)
     pago = models.BooleanField(default=False)
 
     def calcular_total(self):
-        if not self.pk:
-            return Decimal('0.00')
         total = self.itens.aggregate(total=Sum('subtotal'))['total']
         return total or Decimal('0.00')
 
@@ -133,53 +116,54 @@ class Venda(models.Model):
         if not self.cliente:
             raise ValidationError("Você deve selecionar um cliente.")
 
-        total = self.calcular_total()
+        # Não calcular total aqui (venda ainda pode não ter pk)
 
         if self.forma_pagamento == 'dinheiro':
             if self.valor_pago is None:
                 raise ValidationError("Informe o valor pago para pagamento em dinheiro.")
-            if self.valor_pago < total:
-                raise ValidationError("O valor pago não pode ser menor que o valor total da venda.")
         else:
             if self.valor_pago:
                 raise ValidationError("Valor pago só deve ser informado para pagamento em dinheiro.")
             if self.troco:
-                raise ValidationError("Troco só deve ser informado se a forma de pagamento for dinheiro.")
+                raise ValidationError("Troco só para pagamento em dinheiro.")
 
     def save(self, *args, validate=True, **kwargs):
         if validate:
             self.full_clean()
 
-        if not self.pk:
+        creating = self.pk is None
+
+        # Primeiro salva a venda caso não exista
+        if creating:
             super().save(*args, **kwargs)
 
+        # Agora pode calcular total
         total = self.calcular_total()
         self.valor_total = total
 
+        # Regras de pagamento
         if self.forma_pagamento == 'dinheiro':
-            if self.valor_pago is not None:
+            if self.valor_pago:
                 self.troco = max(self.valor_pago - total, Decimal('0.00'))
                 self.saldo_devedor = max(total - self.valor_pago, Decimal('0.00'))
                 self.pago = self.valor_pago >= total
         else:
             self.troco = None
             self.valor_pago = None
-            self.pago = False  # aqui mantém falso para não marcar pago automaticamente
+            self.pago = False
             self.saldo_devedor = Decimal('0.00')
 
-        super().save(*args, **kwargs)
+        # Agora salva apenas os campos que mudaram
+        super().save(update_fields=[
+            'valor_total', 'troco', 'valor_pago', 'saldo_devedor', 'pago'
+        ])
 
     def __str__(self):
         return f"Venda #{self.pk} - Cliente: {self.cliente.nome if self.cliente else 'Desconhecido'}"
 
     def listar_produtos(self):
-        return ", ".join([
-            f"{item.produto.nome} (x{item.quantidade})"
-            for item in self.itens.all()
-        ])
-    listar_produtos.short_description = "Produtos Comprados"
+        return ", ".join([f"{item.produto.nome} (x{item.quantidade})" for item in self.itens.all()])
 
-    
 
 # -------------------------------
 # ITEM DE VENDA
@@ -195,26 +179,38 @@ class ItemVenda(models.Model):
         if self.quantidade is None:
             raise ValidationError("Informe a quantidade.")
         if not self.produto.verificar_estoque(self.quantidade):
-            raise ValidationError(
-                f'Estoque insuficiente para {self.produto.nome}. Disponível: {self.produto.estoque}'
-            )
+            raise ValidationError(f'Estoque insuficiente para {self.produto.nome}. Disponível: {self.produto.estoque}')
 
     def save(self, *args, **kwargs):
-        # Se for novo item, diminui estoque
-        if not self.pk:
+        novo = not self.pk
+
+        if novo:
             self.clean()
             self.produto.diminuir_estoque(self.quantidade)
 
         self.subtotal = self.produto.preco * self.quantidade
         super().save(*args, **kwargs)
 
+        # Recalcular a venda após salvar o item
+        self.venda.save(validate=False)
+
     def delete(self, *args, **kwargs):
-        # Ao deletar, devolve estoque
         self.produto.aumentar_estoque(self.quantidade)
         super().delete(*args, **kwargs)
 
+        # Atualiza venda após excluir item
+        self.venda.save(validate=False)
+
     def __str__(self):
         return f"{self.quantidade}x {self.produto.nome} (Venda #{self.venda.pk})"
+
+
+# -------------------------------
+# SINAL — garante que o estoque volta SEMPRE
+# -------------------------------
+@receiver(pre_delete, sender=ItemVenda)
+def devolver_estoque_ao_excluir(sender, instance, **kwargs):
+    instance.produto.aumentar_estoque(instance.quantidade)
 
 
 # -------------------------------
@@ -247,5 +243,3 @@ class Caixa(models.Model):
     def __str__(self):
         status = "Aberto" if not self.data_fechamento else "Fechado"
         return f"Caixa {self.data_abertura.strftime('%d/%m/%Y %H:%M')} - {status}"
-
-
