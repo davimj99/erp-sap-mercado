@@ -1,17 +1,39 @@
-# Banco de dados
+# -----------------------------
+# Banco de Dados
+# -----------------------------
 db.sqlite3
 *.sqbpro
 
-# Django
+# -----------------------------
+# Ambiente Virtual
+# -----------------------------
+venv/
+.env
+.venv/
+
+# -----------------------------
+# Django / Python
+# -----------------------------
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 *.log
 
+# Ignorar migrações geradas automaticamente (opcional)
+*/migrations/__pycache__/
+*/migrations/*.pyc
+
+# Caso queira ignorar TODAS as migrações (não recomendado)
+# */migrations/*.py
+
+# -----------------------------
 # VSCode
+# -----------------------------
 .vscode/
 
-# Migrations compiladas
-*/migrations/__pycache__/
-
-# Ambiente virtual
-venv/
+# -----------------------------
+# Sistema operacional
+# -----------------------------
+.DS_Store
+Thumbs.db
