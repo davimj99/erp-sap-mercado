@@ -1,6 +1,9 @@
 from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
+from .api_pdv import api_bipar
+from .api_pdv import api_bipar
+
 
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),
@@ -14,5 +17,11 @@ urlpatterns = [
 
     # rota com data
     path('vendas/<str:data>/', views.vendas_por_data, name='vendas_por_data'),
+
+    
+    path('api/pdv/scan/', api_bipar, name='api_pdv_scan'),
+
+    path("admin/scan/", api_bipar, name="api_bipar"),
+
 ]
 

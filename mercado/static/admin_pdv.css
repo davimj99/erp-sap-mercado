@@ -1,0 +1,15 @@
+/* Deixa tabela de itens estilo PDV */
+#itemvenda_set-group table td, 
+#itemvenda_set-group table th {
+    background: #1a1a1a !important;
+    color: #fff !important;
+}
+
+/* Campo de código de barras chamativo */
+#id_codigo_barras {
+    border: 2px solid #00d4ff;
+    background: #000;
+    color: #0ff;
+    font-size: 18px;
+    font-weight: bold;
+}

@@ -105,6 +105,7 @@ class Venda(models.Model):
     valor_total = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), editable=False)
     saldo_devedor = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), editable=False)
     pago = models.BooleanField(default=False)
+    codigo_barras = models.CharField(max_length=50, unique=True, blank=True, null=True)
 
     def calcular_total(self):
         total = self.itens.aggregate(total=Sum('subtotal'))['total']
@@ -113,8 +114,10 @@ class Venda(models.Model):
     def clean(self):
         super().clean()
 
-        if not self.cliente:
-            raise ValidationError("Você deve selecionar um cliente.")
+        # Permite cliente None no PDV
+        if self.cliente is None and self.forma_pagamento != 'em aberto':
+            raise ValidationError("Você deve selecionar um cliente para finalizar a venda.")
+
 
         # Não calcular total aqui (venda ainda pode não ter pk)
 
@@ -243,3 +246,19 @@ class Caixa(models.Model):
     def __str__(self):
         status = "Aberto" if not self.data_fechamento else "Fechado"
         return f"Caixa {self.data_abertura.strftime('%d/%m/%Y %H:%M')} - {status}"
+
+
+
+from django.conf import settings
+
+class PDVSession(models.Model):
+    """
+    Mantém a venda em andamento por usuário (sessão do PDV).
+    Ajuda a manter tudo separado e evita 'get_or_create' global.
+    """
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    venda = models.ForeignKey(Venda, on_delete=models.CASCADE, null=True, blank=True)
+    criada_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"PDVSession - {self.user.username} - Venda #{self.venda.pk if self.venda else '—'}"

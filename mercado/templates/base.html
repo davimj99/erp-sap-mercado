@@ -1,0 +1,41 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ERP Mercado{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'pdv.css' %}">
+
+    <!-- Estilos Globais -->
+    <link rel="stylesheet" href="{% static 'styledashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'styleprodutos.css' %}">
+    <link rel="stylesheet" href="{% static 'style.vendas.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="fundo-dashboard">
+
+    <!-- NAVBAR -->
+    <header style="padding: 15px; background: #222; color: #fff;">
+        <h2>ERP – Sistema do Mercado</h2>
+        <nav>
+            <a href="/" style="color:white; margin-right:15px;">Dashboard</a>
+            <a href="/produtos/" style="color:white; margin-right:15px;">Produtos</a>
+            <a href="/pdv/" style="color:white; margin-right:15px;">PDV</a>
+            <a href="/admin/" style="color:white;">Admin</a>
+        </nav>
+    </header>
+
+    <!-- CONTEÚDO -->
+    <main style="padding: 20px;">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

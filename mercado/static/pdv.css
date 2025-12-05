@@ -1,0 +1,83 @@
+body {
+    margin: 0;
+    background: #f3f3f3;
+    font-family: Arial, sans-serif;
+}
+
+/* HEADER */
+.top-bar {
+    background: #111;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.menu a {
+    margin-left: 20px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.pdv-container {
+    width: 90%;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px #ccc;
+}
+
+.scanner-box {
+    margin-bottom: 20px;
+}
+
+.scanner-input {
+    width: 100%;
+    padding: 18px;
+    font-size: 22px;
+    border-radius: 8px;
+    border: 2px solid #666;
+}
+
+.itens-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.itens-table th, .itens-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.totais {
+    margin-top: 30px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.actions {
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 15px 30px;
+    font-size: 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.finalizar {
+    background: #28a745;
+    color: white;
+}
+
+.cancelar {
+    background: #dc3545;
+    color: white;
+    margin-left: 20px;
+}

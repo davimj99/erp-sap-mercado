@@ -8,18 +8,23 @@ from decimal import Decimal
 from simple_history.admin import SimpleHistoryAdmin
 from django.contrib.admin.models import LogEntry
 from django.forms.models import BaseInlineFormSet
-from .models import Produto, Venda, Cliente, ClienteResumo, Caixa, ItemVenda
 
+from .models import Produto, Venda, Cliente, ClienteResumo, Caixa, ItemVenda, PDVSession
+
+# ===========================
 # Configurações do Admin
+# ===========================
 admin.site.site_header = "Administração do Mini Mercado"
 admin.site.site_title = "Administração do Mini Mercado"
 admin.site.index_title = "Painel Administrativo"
 
-# -------------------------
-# Inline de ItemVenda
-# -------------------------
+
+# ===========================
+# Inline: ItemVenda
+# ===========================
 class ItemVendaInlineFormSet(BaseInlineFormSet):
     pass
+
 
 class ItemVendaInline(admin.TabularInline):
     model = ItemVenda
@@ -38,14 +43,15 @@ class ItemVendaInline(admin.TabularInline):
         return f"R$ {obj.subtotal:.2f}" if obj.subtotal else "R$ 0.00"
     subtotal_display.short_description = "Subtotal"
 
-# -------------------------
+
+# ===========================
 # Produto
-# -------------------------
+# ===========================
 @admin.register(Produto)
 class ProdutoAdmin(SimpleHistoryAdmin):
-    list_display = ['nome', 'preco', 'estoque', 'status_estoque']
+    list_display = ['nome', 'preco', 'estoque', 'codigo_barras', 'status_estoque']
     list_filter = ['categoria']
-    search_fields = ['nome']
+    search_fields = ['nome', 'codigo_barras']
     ordering = ['nome']
 
     def status_estoque(self, obj):
@@ -56,9 +62,10 @@ class ProdutoAdmin(SimpleHistoryAdmin):
         return format_html('<span style="color: green;">✅ OK ({})</span>', obj.estoque)
     status_estoque.short_description = 'Status'
 
-# -------------------------
-# Formulário customizado para Venda
-# -------------------------
+
+# ===========================
+# Form Venda
+# ===========================
 class VendaAdminForm(forms.ModelForm):
     class Meta:
         model = Venda
@@ -81,27 +88,34 @@ class VendaAdminForm(forms.ModelForm):
                 raise ValidationError({'valor_pago': f'Valor pago ({valor_pago}) insuficiente para o total ({total}).'})
         return cleaned_data
 
-# -------------------------
-# Admin de Venda
-# -------------------------
+
+# ===========================
+# Venda
+# ===========================
 @admin.register(Venda)
 class VendaAdmin(admin.ModelAdmin):
     form = VendaAdminForm
     inlines = [ItemVendaInline]
+
     list_display = [
-        'id', 'cliente', 'mostrar_valor_total', 'status_pago', 
+        'id', 'cliente', 'mostrar_valor_total', 'status_pago',
         'forma_pagamento', 'data_venda', 'produtos', 'saldo_devedor'
     ]
+
     readonly_fields = [
-        'mostrar_valor_total', 'troco', 'data_venda', 
+        'mostrar_valor_total', 'troco', 'data_venda',
         'saldo_devedor', 'pago'
     ]
+
     list_filter = ['forma_pagamento', 'data_venda', 'pago']
     search_fields = ['cliente__nome']
     autocomplete_fields = ['cliente']
     actions = ['marcar_como_pago']
 
-    # --- TUDO DO LEITOR FOI REMOVIDO ---
+    # 🔥 AQUI ESTÁ A CORREÇÃO
+    class Media:
+        js = ("js/admin_pdv.js",)
+        css = {"all": ("admin_pdv.css",)}
 
     def mostrar_valor_total(self, obj):
         return f"R$ {obj.calcular_total():.2f}"
@@ -112,18 +126,18 @@ class VendaAdmin(admin.ModelAdmin):
     produtos.short_description = 'Produtos'
 
     def status_pago(self, obj):
-        return format_html('<span style="color: green;">&#9989;</span>') if obj.pago else format_html('<span style="color: red;">&#10060;</span>')
+        return format_html('<span style="color: green;">✔️</span>') if obj.pago else format_html('<span style="color: red;">❌</span>')
     status_pago.short_description = 'Pago'
-    status_pago.admin_order_field = 'pago'
 
     def marcar_como_pago(self, request, queryset):
         atualizadas = queryset.update(pago=True)
         self.message_user(request, f"{atualizadas} venda(s) marcadas como pagas com sucesso.")
     marcar_como_pago.short_description = "Confirmar pagamento das vendas selecionadas"
 
-# -------------------------
+
+# ===========================
 # Cliente Inline
-# -------------------------
+# ===========================
 class VendaInline(admin.TabularInline):
     model = Venda
     extra = 0
@@ -135,9 +149,10 @@ class VendaInline(admin.TabularInline):
     def has_add_permission(self, request, obj):
         return False
 
-# -------------------------
+
+# ===========================
 # Cliente
-# -------------------------
+# ===========================
 @admin.register(Cliente)
 class ClienteAdmin(SimpleHistoryAdmin):
     list_display = ['nome', 'telefone', 'tipo', 'equipe', 'cor']
@@ -146,9 +161,10 @@ class ClienteAdmin(SimpleHistoryAdmin):
     inlines = [VendaInline]
     ordering = ['nome']
 
-# -------------------------
+
+# ===========================
 # ClienteResumo
-# -------------------------
+# ===========================
 @admin.register(ClienteResumo)
 class ClienteResumoAdmin(admin.ModelAdmin):
     list_display = ['nome', 'tipo', 'total_quantidade', 'total_valor']
@@ -169,17 +185,17 @@ class ClienteResumoAdmin(admin.ModelAdmin):
 
     def total_quantidade(self, obj):
         return obj.total_qtd or 0
-    total_quantidade.short_description = 'Qtd. Total'
 
     def total_valor(self, obj):
-        valor_raw = obj.total_valor or 0
-        valor_formatado = f"R$ {float(valor_raw):.2f}"
-        return format_html('<strong>{}</strong>', valor_formatado)
-    total_valor.short_description = 'Total Comprado'
+        valor = obj.total_valor or Decimal('0.00')
+        valor_formatado = f"{valor:.2f}"
+        return format_html('<strong>R$ {}</strong>', valor_formatado)
 
-# -------------------------
+
+
+# ===========================
 # Caixa
-# -------------------------
+# ===========================
 @admin.register(Caixa)
 class CaixaAdmin(admin.ModelAdmin):
     list_display = ['data_abertura', 'valor_inicial', 'valor_fechamento', 'data_fechamento', 'status']
@@ -188,16 +204,17 @@ class CaixaAdmin(admin.ModelAdmin):
 
     def status(self, obj):
         return "Aberto" if not obj.data_fechamento else "Fechado"
-    status.short_description = "Status"
 
-# -------------------------
+
+# ===========================
 # Histórico
-# -------------------------
+# ===========================
 class LogEntryProxy(LogEntry):
     class Meta:
         proxy = True
         verbose_name = "Histórico"
         verbose_name_plural = "Histórico"
+
 
 @admin.register(LogEntryProxy)
 class LogEntryProxyAdmin(admin.ModelAdmin):
@@ -205,5 +222,12 @@ class LogEntryProxyAdmin(admin.ModelAdmin):
     list_filter = ['user', 'content_type', 'action_flag']
     search_fields = ['object_repr', 'change_message']
 
-    def has_delete_permission(self, request, obj=None):
-        return True
+
+# ===========================
+# PDVSession
+# ===========================
+@admin.register(PDVSession)
+class PDVSessionAdmin(admin.ModelAdmin):
+    list_display = ['user', 'venda', 'criada_em']
+    readonly_fields = ['criada_em']
+

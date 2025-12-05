@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}PDV{% endblock %}
+
+{% block content %}
+
+<div class="pdv-container">
+
+    <!-- CAMPO DO BIP -->
+    <div class="scanner-box">
+        <label>Código de Barras</label>
+        <input type="text" id="barcode" autofocus placeholder="Bipe um produto..." class="scanner-input">
+    </div>
+
+    <!-- LISTA DE ITENS -->
+    <div class="itens-box">
+        <h3>Itens da Venda</h3>
+
+        <table class="itens-table">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Qtd</th>
+                    <th>Preço</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+
+            <tbody id="itens-list"></tbody>
+        </table>
+    </div>
+
+    <!-- TOTAL GERAL -->
+    <div class="totais">
+        <h2>Total: R$ <span id="total-geral">0,00</span></h2>
+    </div>
+
+    <!-- BOTÕES -->
+    <div class="actions">
+        <button class="btn finalizar">Finalizar Venda</button>
+        <button class="btn cancelar">Cancelar</button>
+    </div>
+
+</div>
+
+<script>
+let total = 0;
+
+document.getElementById("barcode").addEventListener("change", function() {
+    let cod = this.value;
+
+    fetch("/api/pdv/scan/", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ codigo_de_barras: cod })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        // ADICIONA NA TABELA
+        let tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${data.nome}</td>
+            <td>1</td>
+            <td>R$ ${data.preco}</td>
+            <td>R$ ${data.preco}</td>
+        `;
+
+        document.getElementById("itens-list").appendChild(tr);
+
+        // ATUALIZA TOTAL
+        total += parseFloat(data.preco);
+        document.getElementById("total-geral").innerText = total.toFixed(2);
+    });
+
+    this.value = "";
+});
+</script>
+
+{% endblock %}
