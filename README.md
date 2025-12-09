@@ -78,7 +78,6 @@ CRM <br>
 Gateways de pagamento <br>
 
 # 🔧 Arquitetura da Aplicação
-![alt text](image.png)
-
+<img width="365" height="888" alt="Captura de ecrã 2025-12-09 204207" src="https://github.com/user-attachments/assets/c4724d51-b64b-4c54-abbd-e1fb24bd1063" />
 
 
